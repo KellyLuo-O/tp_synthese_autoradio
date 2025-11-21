@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "spi.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -109,9 +110,6 @@ int fonction(h_shell_t *shell, int argc, char ** argv)
 }
 
 
-
-
-
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART2)
@@ -128,11 +126,52 @@ void task_shell (void * unused)
 	shell_init(&shell);
 	shell_add(&shell, 'f', fonction, "Une fonction inutile");
 	shell_run(&shell);	// shell_run contient une boucle infinie
-
 	// donc on ne retournera jamais de cette fonction
-
 }
 
+
+void task_spi_led (void * unused)
+{
+	const uint8_t control_byte_write = 0b01000000;
+	const uint8_t register_gpioA_status = 0x12;
+	const uint8_t register_IODIRA = 0x00;
+	const uint8_t register_IODIRB = 0x01;
+	uint8_t led_data = 0x00;
+	uint8_t led_value[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+	int led_index = 0;
+	printf("SPI LED task started\r\n");
+
+	uint8_t pTxDataA[3] = {control_byte_write, register_IODIRA, led_data};
+	uint8_t pTxDataB[3] = {control_byte_write, register_IODIRB, led_data};
+
+	// Allumer toutes les LED GPIOA
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET); // CS LOW
+	HAL_SPI_Transmit(&hspi3, pTxDataA, 3, HAL_MAX_DELAY);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET); // CS HIGH
+
+	// Allume toutes les LED GPIOB
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET); // CS LOW
+	HAL_SPI_Transmit(&hspi3, pTxDataB, 3, HAL_MAX_DELAY);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET); // CS HIGH
+
+	while (1)
+	{
+		// CHENILLLE SUr les LED GPIOA
+		led_index++;
+		if (led_index == 8)
+			led_index = 0;
+		pTxDataA[2] = led_value[led_index];
+
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET); // CS LOW
+
+		HAL_SPI_Transmit(&hspi3, pTxDataA, 3, HAL_MAX_DELAY);
+
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET); // CS HIGH
+
+		vTaskDelay(500);
+	}
+
+}
 
 /* USER CODE END 0 */
 
@@ -166,17 +205,23 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
 
 	printf("\r\n =========> TP SYNTHESE AUTO RADIO <======== \r\n");
 
 
-	if (xTaskCreate(task_shell, "shell", 512, NULL, 1, NULL) != pdPASS)
+	if (xTaskCreate(task_shell, "shell", 512, NULL, 2, NULL) != pdPASS)
 	{
 		printf("ERROR\r\n");
 		Error_Handler();
 	}
 
+	if (xTaskCreate(task_spi_led, "spi_led", 512, NULL, 1, NULL) != pdPASS)
+	{
+		printf("ERROR\r\n");
+		Error_Handler();
+	}
 
 	vTaskStartScheduler();
 
