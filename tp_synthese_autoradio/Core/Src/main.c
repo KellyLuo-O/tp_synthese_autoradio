@@ -144,6 +144,8 @@ void task_spi_led (void * unused)
 	uint8_t pTxDataA[3] = {control_byte_write, register_IODIRA, led_data};
 	uint8_t pTxDataB[3] = {control_byte_write, register_IODIRB, led_data};
 
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET); // RESET LOW
+
 	// Allumer toutes les LED GPIOA
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET); // CS LOW
 	HAL_SPI_Transmit(&hspi3, pTxDataA, 3, HAL_MAX_DELAY);
