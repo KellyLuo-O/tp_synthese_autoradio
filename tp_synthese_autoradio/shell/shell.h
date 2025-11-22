@@ -58,6 +58,4 @@ int shell_run(h_shell_t *shell);
 void shell_uart_rx_callback(h_shell_t *shell);
 
 
-
-
 #endif /* INC_LIB_SHELL_SHELL_H_ */

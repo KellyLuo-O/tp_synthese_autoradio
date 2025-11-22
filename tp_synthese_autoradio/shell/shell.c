@@ -7,11 +7,9 @@
 
 #include "shell.h"
 
-
 #include <stdio.h>
 
 #include "gpio.h"
-
 
 
 static char uart_read(h_shell_t *shell)
