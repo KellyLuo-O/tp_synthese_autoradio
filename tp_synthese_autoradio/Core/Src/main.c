@@ -138,6 +138,46 @@ int shell_led(h_shell_t *shell, int argc, char ** argv)
 	return 0;
 }
 
+int shell_toggle_led(h_shell_t *shell, int argc, char ** argv)
+{
+	if (argc != 3)
+	{
+		printf("usage : l GPIOx LED1\r\n");
+		return 0;
+	}
+
+	MCP_GPIO gpio;
+
+	if (strcmp(argv[1], "GPIOA") == 0) gpio = MCP_GPIOA;
+	else if (strcmp(argv[1], "GPIOB") == 0) gpio = MCP_GPIOB;
+	else
+	{
+		printf("GPIO invalid : GPIOA or GPIOB\r\n");
+		return 0;
+	}
+
+	MCP_LED led = 0xff;
+
+	if (strcmp(argv[2], "LED1") == 0) led = LED1;
+	else if (strcmp(argv[2], "LED2") == 0) led = LED2;
+	else if (strcmp(argv[2], "LED3") == 0) led = LED3;
+	else if (strcmp(argv[2], "LED4") == 0) led = LED4;
+	else if (strcmp(argv[2], "LED5") == 0) led = LED5;
+	else if (strcmp(argv[2], "LED6") == 0) led = LED6;
+	else if (strcmp(argv[2], "LED7") == 0) led = LED7;
+	else if (strcmp(argv[2], "LED8") == 0) led = LED8;
+	else
+	{
+		printf("LED invalid : LEDx 1 to 8\r\n");
+		return 0;
+	}
+
+	toggle_LED(&mcp_led, gpio, led);
+
+	return 0;
+}
+
+
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -153,6 +193,7 @@ void task_shell (void * unused)
 	shell_init(&shell);
 	shell_add(&shell, 'f', fonction, "Une fonction inutile");
 	shell_add(&shell, 'l', shell_led, "Commande les LED");
+	shell_add(&shell, 'L', shell_toggle_led, "Commande les LED");
 	shell_run(&shell);
 }
 

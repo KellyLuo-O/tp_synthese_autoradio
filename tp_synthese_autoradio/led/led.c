@@ -52,3 +52,17 @@ void transmit_LED(h_mcp_led_t *mcp_led, MCP_GPIO gpio, uint8_t value)
 	MCP_Transmit(mcp_led, pTxData, 3);
 	mcp_led->led_value[gpio] = value;
 }
+
+void toggle_LED(h_mcp_led_t *mcp_led, MCP_GPIO gpio, MCP_LED led)
+{
+	uint8_t led_value = mcp_led->led_value[gpio];
+
+	if ((led_value & led))
+		led_value &= ~led;
+	else
+		led_value |= led;
+
+	uint8_t pTxData[3] = {MCP_WRITE, gpio, led_value};
+	MCP_Transmit(mcp_led, pTxData, 3);
+	mcp_led->led_value[gpio] = led_value;
+}
