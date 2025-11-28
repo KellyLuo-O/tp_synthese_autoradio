@@ -77,7 +77,6 @@ uint8_t drv_uart_receive(h_shell_t *shell, char * pData, uint16_t size)
 	return 0;
 }
 
-
 uint8_t drv_uart_transmit(char * pData, uint16_t size)
 {
 	HAL_UART_Transmit(&huart2, (uint8_t*)pData, size, HAL_MAX_DELAY);
@@ -142,7 +141,7 @@ int shell_toggle_led(h_shell_t *shell, int argc, char ** argv)
 {
 	if (argc != 3)
 	{
-		printf("usage : l GPIOx LED1\r\n");
+		printf("usage : L GPIOx LED1\r\n");
 		return 0;
 	}
 
