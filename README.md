@@ -11,6 +11,7 @@
    - MOSI -> PB5
    - MISO -> PC11
    - CS -> PB7
+   - RESET -> PA0
    - (A0 A1 A2 ) = 000
 4. Paramètre pour configurer un SPI
      - Basic parameters
@@ -21,3 +22,28 @@
        - Prescaler -> Baudrate 10MHz
        - Clock Polarity : LOW (niveau logique au repos)
        - Clock Phase
+
+## 3 Le CODEC Audio SGTL5000
+
+### 3.1 Configuration préalables
+
+1. Pin utilisé pour l'I2C
+   - SDA -> PB11
+   - SCL -> PB10
+   - ==> correspondant à l'**I2C2**
+
+### 3.2 Configuration du CODEC par l’I2C
+5. Registres :
+  - CHIP_ANA_POWER : 0x0030
+  - CHIP_LINREG_CTRL : 0x0026      
+  - CHIP_REF_CTRL : 0x0028
+  - CHIP_LINE_OUT_CTRL : 0x002C
+  - CHIP_SHORT_CTRL : 0x003C
+  - CHIP_ANA_CTRL : 0x0024
+  - CHIP_ANA_POWER : 
+  - CHIP_DIG_POWER : 0x0002
+  - CHIP_LINE_OUT_VOL : 0x002E
+  - CHIP_CLK_CTRL : 0x0004
+  - CHIP_I2S_CTRL : 0X0006
+  - CHIP_ADCDAC_CTRL : 0x000E
+  - CHIP_DAC_VOL : 0x0010
