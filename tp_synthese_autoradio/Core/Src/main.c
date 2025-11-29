@@ -33,6 +33,7 @@
 #include <string.h>
 #include "shell.h"
 #include "led.h"
+#include "sgtl5000.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -229,15 +230,15 @@ void task_spi_led (void * unused)
 
 void task_codec(void * unused)
 {
-	uint16_t dev_address = 0x14;
-	uint16_t reg_chip_id = 0x0000;
-	uint8_t rdata[2];
+	sgtl_get_id();
+	sgtl_configure();
+
+	uint8_t audioBuffer[1024];
 
 	for (;;)
 	{
-		HAL_I2C_Mem_Read(&hi2c2, dev_address, reg_chip_id, 2, rdata, 1, HAL_MAX_DELAY);
-
-		printf("chip id du codec : %x\r\n", rdata[0]);
+		HAL_SAI_Receive_DMA(&hsai_BlockA2, audioBuffer, 1024);
+		HAL_SAI_Transmit_DMA(&hsai_BlockA2, audioBuffer, 1024);
 		vTaskDelay(1000);
 	}
 }
@@ -288,13 +289,13 @@ int main(void)
 
 	__HAL_SAI_ENABLE(&hsai_BlockA2);
 
-	if (xTaskCreate(task_shell, "shell", 512, NULL, 2, NULL) != pdPASS)
+	if (xTaskCreate(task_shell, "shell", 512, NULL, 1, NULL) != pdPASS)
 	{
 		printf("ERROR\r\n");
 		Error_Handler();
 	}
 
-	if (xTaskCreate(task_spi_led, "spi_led", 512, NULL, 1, NULL) != pdPASS)
+	if (xTaskCreate(task_spi_led, "spi_led", 512, NULL, 2, NULL) != pdPASS)
 	{
 		printf("ERROR\r\n");
 		Error_Handler();
