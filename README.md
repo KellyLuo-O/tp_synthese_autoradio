@@ -51,10 +51,13 @@
 ### 3.3 Signaux I2S
 
 MCLK:
+
 <img src="images/MCLK.jpg" width="500"/>
 SCLK:
+
 <img src="images/SCLK.jpg" width="500"/>
 LRCLK:
+
 <img src="images/LRCLK.jpg" width="500"/>
 
 ### 3.4 Génération de signal audio
