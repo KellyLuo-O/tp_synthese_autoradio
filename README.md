@@ -61,3 +61,8 @@ LRCLK:
 <img src="images/LRCLK.jpg" width="500"/>
 
 ### 3.4 Génération de signal audio
+
+signal triangulaire:
+
+<img src="images/triangulaire.jpg" width="500"/>
+
