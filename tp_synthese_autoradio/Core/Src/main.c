@@ -228,17 +228,27 @@ void task_spi_led (void * unused)
 }
 
 
+
+h_sgtl5000_t sgtl5000 =
+{
+		.hi2c = &hi2c2,
+		.hsai_tx = &hsai_BlockA2,
+		.hsai_rx = &hsai_BlockB2,
+		.dev_address = 0x14
+};
+
 void task_codec(void * unused)
 {
-	sgtl_get_id();
-	sgtl_configure();
+//	sgtl_get_id();
+//	sgtl_configure();
 
-	uint8_t audioBuffer[1024];
+	sgtl5000_init(&sgtl5000);
+
+	printf("SGTL5000 configured\r\n");
 
 	for (;;)
 	{
-		HAL_SAI_Receive_DMA(&hsai_BlockA2, audioBuffer, 1024);
-		HAL_SAI_Transmit_DMA(&hsai_BlockA2, audioBuffer, 1024);
+		sgtl5000_start(&sgtl5000);
 		vTaskDelay(1000);
 	}
 }
