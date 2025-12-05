@@ -55,6 +55,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DAC_HandleTypeDef hdac1;
 extern DMA_HandleTypeDef hdma_sai2_a;
 extern DMA_HandleTypeDef hdma_sai2_b;
 extern SAI_HandleTypeDef hsai_BlockA2;
@@ -214,7 +215,14 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
 
   /* USER CODE END TIM6_DAC_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim6);
+  if (htim6.Instance != NULL)
+  {
+    HAL_TIM_IRQHandler(&htim6);
+  }
+  if (hdac1.Instance != NULL)
+  {
+    HAL_DAC_IRQHandler(&hdac1);
+  }
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 
   /* USER CODE END TIM6_DAC_IRQn 1 */

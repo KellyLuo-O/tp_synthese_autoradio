@@ -83,4 +83,7 @@ typedef struct h_sgtl5000_struct
 HAL_StatusTypeDef sgtl5000_init(h_sgtl5000_t * h_sgtl5000);
 HAL_StatusTypeDef sgtl5000_start(h_sgtl5000_t * h_sgtl5000);
 
+HAL_StatusTypeDef sgtl5000_transmit(h_sgtl5000_t * h_sgtl5000);
+void sgtl5000_generate_triangle(h_sgtl5000_t * h_sgtl5000);
+
 #endif /* SGTL5000_SGTL5000_H_ */

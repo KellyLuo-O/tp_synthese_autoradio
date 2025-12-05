@@ -277,3 +277,49 @@ HAL_StatusTypeDef sgtl5000_start(h_sgtl5000_t * h_sgtl5000)
 
 	return HAL_OK;
 }
+
+
+
+HAL_StatusTypeDef sgtl5000_transmit(h_sgtl5000_t * h_sgtl5000)
+{
+	HAL_StatusTypeDef ret;
+
+	ret = HAL_SAI_Transmit_DMA(h_sgtl5000->hsai_tx, (uint8_t*) h_sgtl5000->sai_tx_buffer, AUDIO_BUFFER_LENGTH*2);
+	if (ret != HAL_OK) return ret;
+
+	return HAL_OK;
+}
+
+
+#define F_TRI               5000     // fréquence du triangle en Hz
+#define FS                  48000    // fréquence d'échantillonnage
+#define AMP                 10000
+
+void sgtl5000_generate_triangle(h_sgtl5000_t *h_sgtl5000)
+{
+    static int16_t value = -AMP;
+    static int16_t direction = 1;
+
+    int16_t step = (2 * AMP) / (FS / F_TRI);
+
+    int16_t total_samples = AUDIO_BUFFER_LENGTH * AUDIO_NUM_CHANNELS * AUDIO_DOUBLE_BUFFER;
+
+    for (int i = 0; i < total_samples; i += AUDIO_NUM_CHANNELS)
+    {
+    	h_sgtl5000->sai_tx_buffer[i] = value;
+    	h_sgtl5000->sai_tx_buffer[i + 1] = value;
+
+        value += step * direction;
+        if (value >= AMP)
+        {
+            value = AMP;
+            direction = -1;
+        }
+        else if (value <= -AMP)
+        {
+            value = -AMP;
+            direction = 1;
+        }
+        printf("triangle value: %d\r\n", value);
+    }
+}
