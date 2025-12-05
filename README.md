@@ -62,7 +62,16 @@ LRCLK:
 
 ### 3.4 Génération de signal audio
 
-signal triangulaire:
+Signal triangulaire:
 
 <img src="images/triangulaire.jpg" width="500"/>
+
+### 3.5 Bypass numérique
+
+Génération d’un signal sinusoïdal avec le GBF, puis envoi vers l’oscilloscope:
+
+<img src="images/GBF.jpg" width="500"/>
+<img src="images/sin.jpg" width="500"/>
+
+
 
