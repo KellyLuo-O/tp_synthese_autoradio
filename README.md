@@ -47,3 +47,14 @@
   - CHIP_I2S_CTRL : 0X0006
   - CHIP_ADCDAC_CTRL : 0x000E
   - CHIP_DAC_VOL : 0x0010
+
+### 3.3 Signaux I2S
+
+MCLK:
+<img src="images/MCLK.jpg" width="500"/>
+SCLK:
+<img src="images/SCLK.jpg" width="500"/>
+LRCLK:
+<img src="images/LRCLK.jpg" width="500"/>
+
+### 3.4 Génération de signal audio
